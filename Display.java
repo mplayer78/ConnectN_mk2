@@ -1,3 +1,4 @@
+// display abstracted so that the class could be extended to output to a different media
 class Display {
   private static final char[] tokenList = { ' ', 'x', 'o', '#', '*' };
 
