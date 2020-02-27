@@ -15,6 +15,7 @@ class Board {
     board[x][y] = player;
   }
 
+  // returns the y coordinate of an uninhabited space given the x
   private int firstFreeSpace(int x) {
     int y = 0;
     while (board[x][y] > 0) {
@@ -45,6 +46,9 @@ class Board {
 
   private boolean recursiveCheck(int count, int x, int y, int incX, int incY) {
     while (count - 1 > 0) {
+      // check if space is not filled
+      // if the next space is past the edge
+      // if the next square matches the current
       if (x + incX < BOARD_WIDTH && x + incX >= 0 && y + incY < BOARD_HEIGHT && y + incY >= 0 && board[x][y] != 0
           && board[x][y] == board[x + incX][y + incY]) {
         return recursiveCheck(count - 1, x + incX, y + incY, incX, incY);
