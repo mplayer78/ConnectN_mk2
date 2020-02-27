@@ -7,41 +7,43 @@ class Game {
   private int turn = 0;
   public BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   private boolean gameRunning = false;
+  public static int connect;
 
-  public Game() {
+  public Game(String arg) {
     this.board = new Board();
     this.playerList = new ArrayList<Player>();
+    try {
+      connect = Integer.parseInt(arg);
+    } catch (NumberFormatException e) {
+      Display.log("\nInvalid command line argument\n");
+      System.exit(1);
+    }
     Player p1 = new Player();
-    Player p2 = new Player();
+    Player p2 = new ComputerPlayer();
+    Player p3 = new ComputerPlayer();
     playerList.add(p1);
     playerList.add(p2);
+    playerList.add(p3);
     gameRunning = true;
     while (gameRunning) {
-      Player currentPlayer = playerList.get(turn % 2);
-      System.out.println("Player " + currentPlayer.getId() + " your go.");
+      Player currentPlayer = playerList.get(turn % playerList.size());
       try {
-        // adjust for zero-index
-        int input = Integer.parseInt(br.readLine()) - 1;
-        System.out.println(input);
-        board.takeTurn(input, currentPlayer.getId());
+        int turnInt = currentPlayer.takeTurn(br);
+        board.takeTurn(turnInt, currentPlayer.getId());
+        Display.print(this.board);
         if (board.checkWin()) {
-          System.out.printf("Well done!");
+          Display
+              .log(String.format("\n*** Well done player %d, you are a worthy winner! ***\n", currentPlayer.getId()));
+          gameRunning = false;
         }
         turn++;
-        displayBoard();
+      } catch (IndexOutOfBoundsException e) {
+        Display.log("Sorry, that's not a valid move. Try again.\n");
+      } catch (NumberFormatException e) {
+        Display.log(String.format("You need to input a number between 1 - %d, try again.\n", Board.BOARD_WIDTH));
       } catch (Exception e) {
-        System.out.println(e.getMessage());
+        Display.log(e.getMessage());
       }
     }
-  }
-
-  public void displayBoard() {
-    for (int y = Board.BOARD_HEIGHT - 1; y >= 0; y--) {
-      System.out.printf("\n");
-      for (int x = 0; x < Board.BOARD_WIDTH; x++) {
-        System.out.printf("| %d ", this.board.getPiece(x, y));
-      }
-    }
-    System.out.printf("\n");
   }
 }

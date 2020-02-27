@@ -1,6 +1,6 @@
 class Board {
-  public static int BOARD_WIDTH = 7;
-  public static int BOARD_HEIGHT = 6;
+  public static final int BOARD_WIDTH = 7;
+  public static final int BOARD_HEIGHT = 6;
   private int[][] board;
 
   public Board() {
@@ -28,27 +28,29 @@ class Board {
   }
 
   public boolean checkWin() {
-    // check horizontal
-    // int[][] cartesian = { { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 } };
-    for (int x = 0; x < BOARD_WIDTH; x++) {
-      if (recursiveCheck(4, x, 0, 1, 0)) {
-        return true;
+    // set up coordinate transformations to check for connection
+    int[][] cartesian = { { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 } };
+    for (int[] c : cartesian) {
+      // each location on the board is checked 4 times, one for each direction
+      for (int x = 0; x < BOARD_WIDTH; x++) {
+        for (int y = 0; y < BOARD_HEIGHT; y++) {
+          if (recursiveCheck(Game.connect, x, y, c[0], c[1])) {
+            return true;
+          }
+        }
       }
     }
     return false;
   }
 
   private boolean recursiveCheck(int count, int x, int y, int incX, int incY) {
-    while (count > 1) {
-      if (x + incX < BOARD_WIDTH && y + incY < BOARD_HEIGHT && board[x][y] != 0
+    while (count - 1 > 0) {
+      if (x + incX < BOARD_WIDTH && x + incX >= 0 && y + incY < BOARD_HEIGHT && y + incY >= 0 && board[x][y] != 0
           && board[x][y] == board[x + incX][y + incY]) {
-        System.out.println("TRUE");
-        System.out.printf("x = %d, x+1 = %d", x, x + incX);
-        recursiveCheck(count - 1, x + incX, y + incY, incX, incY);
+        return recursiveCheck(count - 1, x + incX, y + incY, incX, incY);
       }
       return false;
     }
-    System.out.println("BIG TRUE");
     return true;
   }
 
