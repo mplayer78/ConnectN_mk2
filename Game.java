@@ -8,22 +8,28 @@ class Game {
   public BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
   private boolean gameRunning = false;
   public static int connect;
+  private static int human;
+  private static int comp;
 
-  public Game(String arg) {
+  public Game(String connArg, String humanArg, String compArg) {
     this.board = new Board();
     this.playerList = new ArrayList<Player>();
     try {
-      connect = Integer.parseInt(arg);
+      connect = Integer.parseInt(connArg);
+      human = Integer.parseInt(humanArg);
+      comp = Integer.parseInt(compArg);
     } catch (NumberFormatException e) {
       Display.log("\nInvalid command line argument\n");
       System.exit(1);
     }
-    Player p1 = new Player();
-    Player p2 = new ComputerPlayer();
-    Player p3 = new ComputerPlayer();
-    playerList.add(p1);
-    playerList.add(p2);
-    playerList.add(p3);
+    for (int i = 0; i < human; i++) {
+      Player p1 = new Player();
+      playerList.add(p1);
+    }
+    for (int i = 0; i < comp; i++) {
+      Player p2 = new ComputerPlayer();
+      playerList.add(p2);
+    }
     gameRunning = true;
     while (gameRunning) {
       Player currentPlayer = playerList.get(turn % playerList.size());
